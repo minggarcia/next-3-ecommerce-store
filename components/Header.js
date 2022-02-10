@@ -2,38 +2,55 @@ import { css } from '@emotion/react';
 import Link from 'next/link';
 
 const headerStyle = css`
-  background-color: #f9f1cc;
   margin: 10px 10px;
   border-radius: 5px;
-  font-size: 20px;
+  font-size: 22px;
   padding: 20px 40px;
-  justify-content: center;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  background-color: #a8a7bb;
 `;
 
 const headerContent = css`
-  justify-content: flex-end;
+  justify-content: center;
   display: flex;
-  gap: 40px;
+  gap: 80px;
+  align-items: center;
+
+  a {
+    color: #a8a7bb;
+    text-decoration: none;
+    text-align: center;
+    padding: 20px;
+  }
+  border-bottom: solid 3px #a8a7bb;
+  margin: 10px;
 `;
 
 const logoStyle = css`
-  margin: 0;
-  fill: none;
   display: flex;
-  padding: 0;
-  align-items: center;
+
+  cursor: pointer;
 `;
 
 export default function Header() {
   return (
-    <header css={headerStyle}>
-      {/* <img
-        css={logoStyle}
-        src="/yarn-icon-20.png"
-        width="50px"
-        height="50px"
-        alt="yarn logo"
-      /> */}
+    <header>
+      <div css={headerStyle}>
+        {' '}
+        <Link href="/">
+          <img
+            css={logoStyle}
+            src="/yarn-icon-20.png"
+            width="40px"
+            height="40px"
+            alt="yarn logo"
+          />
+        </Link>{' '}
+        yarn start
+      </div>
+
       <div css={headerContent}>
         <Link href="/">
           <a>Home</a>

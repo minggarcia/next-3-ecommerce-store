@@ -1,27 +1,27 @@
 const yarnsDatabase = [
-  { id: '1', name: 'Cool Wool', type: 'Merino', color: 'Ecru', price: 6 },
+  { id: '1', name: 'Baby Merino', type: 'Merino', color: 'Ecru', price: 6 },
   {
     id: '2',
-    name: 'Landlust Alpaca',
+    name: 'Alpaca Classic',
     type: 'Alpaca',
-    color: 'Lightgrey',
+    color: 'Grey',
     price: 8,
   },
-  { id: '3', name: 'Soft Cotton', type: 'Cotton', color: 'Beige', price: 5 },
+  { id: '3', name: 'Cotton Wool', type: 'Cotton', color: 'Beige', price: 5 },
   {
     id: '4',
-    name: 'Mohair Trend',
+    name: 'Mohair Haze',
     type: 'Mohair',
     color: 'Turquoise',
     price: 10,
   },
-  { id: '5', name: 'Silkhair', type: 'Silk', color: 'Pastelgreen', price: 15 },
+  { id: '5', name: 'Kidsilk Haze', type: 'Silk', color: 'Green', price: 15 },
   {
     id: '6',
-    name: 'Cool Wool Cashmere',
+    name: 'Pure Cashmere',
     type: 'Cashmere',
     color: 'Pink',
-    price: 18,
+    price: 44,
   },
 ];
 

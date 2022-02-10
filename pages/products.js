@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { readFileSync } from 'fs';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import yarnsDatabase from './util/database';
@@ -16,9 +17,17 @@ import yarnsDatabase from './util/database';
 
 const yarnStyles = css`
   border-radius: 5px;
-  border: 2px solid #f9f1cc;
-  padding: 15px;
+  border: 2px solid #a8a7bb;
+  align-items: center;
+  display: flex;
+  justify-content: center;
   margin-bottom: 30px;
+`;
+
+const h1Style = css`
+  text-align: center;
+  margin-top: 100px;
+  margin-bottom: 80px;
 `;
 
 export default function Products(props) {
@@ -31,13 +40,21 @@ export default function Products(props) {
           <meta name="description" content="all the products" />
         </Head>
 
-        <h1>Products</h1>
+        <h1 css={h1Style}>Products</h1>
+
         {props.yarns.map((yarn) => {
           return (
             <div key={`yarn-${yarn.id}`} css={yarnStyles}>
               <Link href={`/products/${yarn.id}`}>
-                <a>
-                  {yarn.type} in {yarn.color}
+                <a data-test-id={`yarn-${yarn.id}`}>
+                  {/* {yarn.type} in {yarn.color} */}
+                  <Image
+                    data-test-id="product-image"
+                    alt="yarn image"
+                    src={`/allyarns/${yarn.id}.jpeg`}
+                    width="300"
+                    height="300"
+                  />
                 </a>
               </Link>
             </div>

@@ -1,9 +1,12 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import { useState } from 'react';
 import Layout from '../../components/Layout';
 import yarnsDatabase from '../util/database';
 
 export default function SingleProduct(props) {
+  const [addToCart, setAddToCart] = useState(1);
+  function addToCartButton() {}
   return (
     <Layout>
       <Head>
@@ -14,17 +17,23 @@ export default function SingleProduct(props) {
       <Image
         data-test-id="product-image"
         alt="yarn image"
-        src={`/allyarns/${props.yarn.id}.jpg`}
-        width="300"
-        height="300"
+        src={`/allyarns/${props.yarn.id}.jpeg`}
+        width="500"
+        height="500"
       />
-
       <div>id: {props.yarn.id}</div>
       <div>name: {props.yarn.name}</div>
       <div>type: {props.yarn.type}</div>
       <div>color: {props.yarn.color}</div>
       <div data-test-id="product-price">price: {props.yarn.price}</div>
+      quantity:
       <input type="number" id="quantity" name="quantity" min="1" />
+      <button
+        data-test-id="product-add-to-cart"
+        onClick={() => addToCartButton()}
+      >
+        yarn add .
+      </button>
     </Layout>
   );
 }
