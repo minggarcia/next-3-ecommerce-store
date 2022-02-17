@@ -1,3 +1,17 @@
+// import { config } from 'dotenv-safe';
+// import postgres from 'postgres';
+
+// config();
+
+// const sql = postgres();
+
+// export async function readProducts() {
+//   const products = await sql`
+// SELECT * FROM products;
+// `;
+//   return products;
+// }
+
 const yarnsDatabase = [
   { id: '1', name: 'Baby Merino', type: 'Merino', color: 'Ecru', price: 6 },
   {
