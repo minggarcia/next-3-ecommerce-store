@@ -11,7 +11,6 @@ export default function Cart() {
         </Head>
 
         <h1> Shopping Cart</h1>
-        <p>shopping list</p>
       </Layout>
     </div>
   );

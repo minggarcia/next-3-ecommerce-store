@@ -1,21 +1,13 @@
 import { css } from '@emotion/react';
-import { prototype } from 'events';
 import Cookies from 'js-cookie';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
 import Layout from '../../components/Layout';
-import { setParsedCookie } from '../util/cookies';
 import yarnsDatabase from '../util/database';
 
-const h1Style = css`
-  text-align: center;
-
-  margin-bottom: 80px;
-`;
-
 const productInfoStyle = css`
-  padding-left: 60px;
+  padding-left: 180px;
   border: solid 2px #a8a7bb;
   border-radius: 5px;
   display: flex;
@@ -35,28 +27,102 @@ const productInfoStyle = css`
   }
 `;
 
+const quantityStyle = css`
+  border: solid 1px #3a4460;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  gap: 25px;
+`;
+
+const buttonStyle = css`
+  background: white;
+  color: black;
+  border-radius: 2px;
+  border: #3a4460;
+  cursor: pointer;
+`;
+const yarnAddButtonStyle = css`
+  display: block;
+  flex-direction: column;
+  background: #3a4460;
+  color: white;
+
+  height: 30px;
+  justify-content: center;
+  width: 210px;
+  border: none;
+  border-radius: 2px;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+`;
+
 export default function SingleProduct(props) {
   const [isInCart, setIsInCart] = useState(props.addedYarn);
+  const [quantity, setQuantity] = useState(0);
+  // const [minQuantity, setMinQuantity] = useState(0);
+  const [addedToCart, setAddedToCart] = useState('');
 
-  const currentCartObject = isInCart.find(
-    (cookieObject) => cookieObject.id === props.yarn.id,
-  );
-  function addToCartButton() {
+  function handleAddToCookie(id) {
     // 1. get the current cookie value
     const cookieValue = JSON.parse(Cookies.get('cart') || '[]');
-    // 2. update the cart count to +1
-    const newCookie = cookieValue.map((cookieObject) => {
-      if (cookieObject.id === props.yarn.id) {
-        return { ...cookieObject, quantity: cookieObject.quantity + 1 };
-      } else {
-        return cookieObject;
-      }
-    });
-    // 3. update cookie and state
-    setIsInCart(newCookie);
 
-    setParsedCookie('cart', newCookie);
+    // 2. update the cookie
+    const existIdOnArray = cookieValue.some((cookieObject) => {
+      return cookieObject.id === id;
+    });
+
+    const yarnAddedToCart = cookieValue.find((cookieObject) => {
+      return cookieObject.id === id;
+    });
+
+    let newCookie;
+
+    if (existIdOnArray) {
+      const newQuantity = quantity + yarnAddedToCart.quantity;
+
+      newCookie = [
+        ...cookieValue,
+        {
+          id: id,
+          quantity: newQuantity,
+          name: props.yarn.name,
+        },
+      ];
+
+      // 3. update cookie
+      const cookieUpdated = newCookie.filter(
+        (cookieObject) =>
+          cookieObject.id !== id ||
+          (cookieObject.id === id) & (cookieObject.quantity === newQuantity),
+      );
+
+      setIsInCart(cookieUpdated);
+      Cookies.set('cart', JSON.stringify(cookieUpdated));
+    } else {
+      newCookie = [
+        ...cookieValue,
+        {
+          id: id,
+          quantity: quantity,
+
+          name: props.yarn.name,
+        },
+      ];
+      // 4. set the new value of the cookie
+      setIsInCart(newCookie);
+      Cookies.set('cart', JSON.stringify(newCookie));
+    }
   }
+
+  const yarnIsAddedToCart = isInCart.some((likedObject) => {
+    return likedObject.id === props.yarn.id;
+  });
+
   return (
     <Layout>
       <Head>
@@ -70,26 +136,37 @@ export default function SingleProduct(props) {
           alt="yarn image"
           src={`/allyarns/${props.yarn.id}.jpeg`}
           width="500"
-          height="500"
+          height="300"
         />
         <span>
           <h1>{props.yarn.name}</h1>
-          {/* <Image
-            src="/allyarns/yarn-icon-20.png"
-            width="40px"
-            height="40px"
-            alt="yarn logo"
-          /> */}
+          {addedToCart}
           <div>id: {props.yarn.id}</div>
           <div>name: {props.yarn.name}</div>
           <div>type: {props.yarn.type}</div>
           <div>color: {props.yarn.color}</div>
-          <div data-test-id="product-price">price: {props.yarn.price}</div>
-          quantity:
-          <input type="number" id="quantity" name="quantity" min="1" />
+          <div data-test-id="product-price">price: {props.yarn.price} € </div>
+
+          <div css={quantityStyle}>
+            <input type="number" id="quantity" name="quantity" min="1" />
+            <button
+              min="1"
+              css={buttonStyle}
+              onClick={() => setQuantity(quantity - 1)}
+            >
+              {' '}
+              -{' '}
+            </button>
+            <p>{quantity}</p>
+            <button css={buttonStyle} onClick={() => setQuantity(quantity + 1)}>
+              {' '}
+              +{' '}
+            </button>
+          </div>
           <button
+            css={yarnAddButtonStyle}
             data-test-id="product-add-to-cart"
-            onClick={() => addToCartButton()}
+            onClick={() => handleAddToCookie(props.yarn.id)}
           >
             yarn add
           </button>

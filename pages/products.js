@@ -33,33 +33,33 @@ const h1Style = css`
 `;
 
 export default function Products(props) {
-  const [isInCart, setIsInCart] = useState(props.addedYarn);
+  // const [isInCart, setIsInCart] = useState(props.addedYarn);
   // console.log('props', JSON.stringify(props, null, 2));
 
-  function yarnAdd(id) {
-    // 1. get the value of the cookie
-    const cookieValue = getParsedCookie('cart') || '[]';
+  // function yarnAdd(id) {
+  // 1. get the value of the cookie
+  // const cookieValue = getParsedCookie('cart') || '[]';
 
-    console.log('current cookie value', cookieValue);
+  // console.log('current cookie value', cookieValue);
 
-    // 2. update the cookie
-    const existIdOnArray = cookieValue.some((cookieObject) => {
-      return cookieObject.id === id;
-    });
-    let newCookie;
-    if (existIdOnArray) {
-      // cookieValue [{id: 3}, {id: 5}]
-      newCookie = cookieValue.filter((cookieObject) => {
-        return cookieObject.id !== id;
-      });
-    } else {
-      newCookie = [...cookieValue, { id: id }];
-    }
+  // 2. update the cookie
+  //   const existIdOnArray = cookieValue.some((cookieObject) => {
+  //     return cookieObject.id === id;
+  //   });
+  //   let newCookie;
+  //   if (existIdOnArray) {
+  //     // cookieValue [{id: 3}, {id: 5}]
+  //     newCookie = cookieValue.filter((cookieObject) => {
+  //       return cookieObject.id !== id;
+  //     });
+  //   } else {
+  //     newCookie = [...cookieValue, { id: id }];
+  //   }
 
-    // 3. set the new value of the cookie
-    setIsInCart(newCookie);
-    setParsedCookie('cart', newCookie);
-  }
+  //   // 3. set the new value of the cookie
+  //   setIsInCart(newCookie);
+  //   setParsedCookie('cart', newCookie);
+  // }
 
   return (
     <div>
@@ -72,9 +72,9 @@ export default function Products(props) {
         <h1 css={h1Style}>Products</h1>
 
         {props.yarns.map((yarn) => {
-          const yarnIsAddedToCart = isInCart.some((addedObject) => {
-            return addedObject.id === yarn.id;
-          });
+          // const yarnIsAddedToCart = isInCart.some((addedObject) => {
+          //   return addedObject.id === yarn.id;
+          // });
           return (
             <div key={`yarn-${yarn.id}`} css={yarnStyles}>
               <Link href={`/products/${yarn.id}`}>
@@ -89,9 +89,6 @@ export default function Products(props) {
                   />
                 </a>
               </Link>
-              <button onClick={() => yarnAdd(yarn.id)}>
-                {yarnIsAddedToCart ? 'Yarn Remove' : 'Yarn Add'}
-              </button>
             </div>
           );
         })}
