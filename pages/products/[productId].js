@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
 import Layout from '../../components/Layout';
-import yarnsDatabase from '../util/database';
+import { readProducts } from '../util/database';
 
 const productInfoStyle = css`
   padding-left: 180px;
@@ -62,7 +62,7 @@ const yarnAddButtonStyle = css`
 `;
 
 export default function SingleProduct(props) {
-  const [isInCart, setIsInCart] = useState(props.addedYarn);
+  const [isInCart, setIsInCart] = useState(props.addedYarnToCart);
   const [quantity, setQuantity] = useState(0);
   // const [minQuantity, setMinQuantity] = useState(0);
   const [addedToCart, setAddedToCart] = useState('');
@@ -176,13 +176,11 @@ export default function SingleProduct(props) {
   );
 }
 
-export function getServerSideProps(context) {
-  const addedYarnFromCookies = context.req.cookies.addedYarn || '[]';
-  const addedYarn = JSON.parse(addedYarnFromCookies);
-
+export async function getServerSideProps(context) {
+  // get all products from database
+  const allProducts = await readProducts();
   const productId = context.query.productId;
-  console.log('db', yarnsDatabase);
-  const matchingYarn = yarnsDatabase.find((yarn) => {
+  const matchingYarn = allProducts.find((yarn) => {
     // eslint-disable-next-line sonarjs/prefer-single-boolean-return
     if (yarn.id === productId) {
       return true;
@@ -191,10 +189,16 @@ export function getServerSideProps(context) {
     }
   });
 
+  // cart cookie
+  const addedYarnFromCookies = JSON.parse(
+    context.req.cookies.addedYarnToCart || '[]',
+  );
+  const addedYarnToCart = JSON.parse(addedYarnFromCookies);
+
   return {
     props: {
       yarn: matchingYarn,
-      addedYarn: addedYarn,
+      addedYarnToCart: addedYarnToCart,
       // productId: productId,
     },
   };

@@ -1,5 +1,5 @@
--- CREATE products TABLE
-CREATE TABLE products (
+-- CREATE yarns TABLE
+CREATE TABLE yarns (
   id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   name varchar(50) NOT NULL,
   type varchar(50) NOT NULL,
@@ -7,8 +7,8 @@ CREATE TABLE products (
   price integer NOT NULL
 );
 
--- INSERTING a product (C in CRUD - CREATE)
-INSERT INTO products
+-- INSERTING a yarns (C in CRUD - CREATE)
+INSERT INTO yarns
 (name, type, color, price)
 VALUES
 ('Baby Merino', 'Merino', 'Ecru', 6),

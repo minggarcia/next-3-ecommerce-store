@@ -1,12 +1,9 @@
 import { css } from '@emotion/react';
-import Cookies from 'js-cookie';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 import Layout from '../components/Layout';
-import { getParsedCookie, setParsedCookie } from './util/cookies';
-import yarnsDatabase, { readProducts } from './util/database';
+import { readProducts } from './util/database';
 
 // const yarns = [
 //   { id: 1, type: 'Merino', color: 'Ecru' },
@@ -98,31 +95,28 @@ export default function Products(props) {
 }
 
 // getServerSideProps --> runs only in node.js
-export function getServerSideProps(context) {
-  // const addedYarn = JSON.parse(addedYarnOnCookies);
-  // IMPORTANT:
-  // - Always return an object from getServerSideProps
-  // - Always return a key in that object that is called props
+export async function getServerSideProps(context) {
+  const allProducts = await readProducts();
 
   // 1. get the cookies from the browser
   // 2. pass the cookie to the frontend
-  const addedYarnFromCookies = context.req.cookies.addedYarn || '[]';
-
-  // if there is no added yarn cookie on the browser we store to an [] otherwise we get the cookie value and parse it
-  const addedYarn = JSON.parse(addedYarnFromCookies);
+  const cookies = JSON.parse(context.req.cookies.addedYarnToCart || '[]');
 
   // IMPORTANT:
-  // - ALWAYS RETURN AN OBJECT FROM getServerSideProps
-  // - ALWAYS RETURN A KEY IN THAT OBJECT THAT IS CALLES PROPS
-
-  // const products = await readProducts();
-
+  // - Always return an object from getServerSideProps
+  // - Always return a key in that object that is called props
   return {
     // in the props object, you can pass back whatever information you want
     props: {
-      addedYarn: addedYarn,
-      yarns: yarnsDatabase,
-      // addedYarn: addedYarn,
+      products: allProducts,
+      cookies,
     },
   };
 }
+
+// if there is no added yarn cookie on the browser we store to an [] otherwise we get the cookie value and parse it
+// const addedYarn = JSON.parse(addedYarnFromCookies);
+
+// IMPORTANT:
+// - ALWAYS RETURN AN OBJECT FROM getServerSideProps
+// - ALWAYS RETURN A KEY IN THAT OBJECT THAT IS CALLED PROPS
