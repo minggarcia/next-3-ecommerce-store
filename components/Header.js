@@ -33,13 +33,21 @@ const logoStyle = css`
 
   cursor: pointer;
 `;
+// function cartQuantity(addedYarnInCookies) {
+//   const sum = addedYarnInCookies
+//     .filter((addedYarnInCookies) => addedYarnInCookies.amount > 0)
+//     .reduce((previousValue, addedYarnInCookies) => {
+//       return previousValue + addedYarnInCookies.amount;
+//     }, 0);
+//   return sum;
+// }
 
 export default function Header() {
   return (
     <header>
       <div css={headerStyle}>
         {' '}
-        <Link href="/">
+        <Link passHref href="/">
           <img
             css={logoStyle}
             src="/yarn-icon-20.png"
@@ -59,7 +67,7 @@ export default function Header() {
           <a data-test-id="products-link"> Products</a>
         </Link>
         <Link href="/cart">
-          <a>Cart</a>
+          <a>Cart -</a>
         </Link>
       </div>
     </header>

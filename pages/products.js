@@ -68,19 +68,19 @@ export default function Products(props) {
 
         <h1 css={h1Style}>Products</h1>
 
-        {props.yarns.map((yarn) => {
+        {props.products.map((product) => {
           // const yarnIsAddedToCart = isInCart.some((addedObject) => {
           //   return addedObject.id === yarn.id;
           // });
           return (
-            <div key={`yarn-${yarn.id}`} css={yarnStyles}>
-              <Link href={`/products/${yarn.id}`}>
-                <a data-test-id={`yarn-${yarn.id}`}>
+            <div key={`yarn-${product.id}`} css={yarnStyles}>
+              <Link href={`/products/${product.id}`}>
+                <a data-test-id={`yarn-${product.id}`}>
                   {/* {yarn.type} in {yarn.color} */}
                   <Image
                     data-test-id="product-image"
                     alt="yarn image"
-                    src={`/allyarns/${yarn.id}.jpeg`}
+                    src={`/allyarns/${product.id}.jpeg`}
                     width="300"
                     height="300"
                   />

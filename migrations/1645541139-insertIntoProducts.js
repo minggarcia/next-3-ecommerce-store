@@ -1,4 +1,4 @@
-const yarns = [
+const products = [
   { name: 'Baby Merino', type: 'Merino', color: 'Ecru', price: 6 },
   {
     name: 'Alpaca Classic',
@@ -24,18 +24,18 @@ const yarns = [
 
 exports.up = async (sql) => {
   await sql`
-	INSERT INTO yarns ${sql(yarns, 'name', 'type', 'color', 'price')}`;
+	INSERT INTO products ${sql(products, 'name', 'type', 'color', 'price')}`;
 };
 
 exports.down = async (sql) => {
-  for (const yarn of yarns) {
+  for (const product of products) {
     await sql`
 	DELETE FROM
-	yarns
+	products
 	WHERE
-	name = ${yarn.name} AND
-	type = ${yarn.type} AND
-	color = ${yarn.color} AND
-	price = ${yarn.price}  `;
+	name = ${product.name} AND
+	type = ${product.type} AND
+	color = ${product.color} AND
+	price = ${product.price}  `;
   }
 };

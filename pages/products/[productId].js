@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
 import Layout from '../../components/Layout';
+import { getParsedCookie, setParsedCookie } from '../util/cookies';
 import { readProducts } from '../util/database';
 
 const productInfoStyle = css`
@@ -60,16 +61,35 @@ const yarnAddButtonStyle = css`
   padding: 10px;
   cursor: pointer;
 `;
+// function for quantity:
+
+export function Counter({ minValue = 1, currentValue, newValueSetter }) {
+  function addQuantity() {
+    newValueSetter(currentValue + 1);
+  }
+  function subtractQuantity() {
+    if (currentValue === minValue) {
+      return;
+    }
+    newValueSetter(currentValue - 1);
+  }
+  return (
+    <div>
+      <button onClick={subtractQuantity}>-</button>
+      <p>{currentValue}</p>
+      <button onClick={addQuantity}>+</button>
+    </div>
+  );
+}
 
 export default function SingleProduct(props) {
   const [isInCart, setIsInCart] = useState(props.addedYarnToCart);
   const [quantity, setQuantity] = useState(0);
-  // const [minQuantity, setMinQuantity] = useState(0);
   const [addedToCart, setAddedToCart] = useState('');
 
   function handleAddToCookie(id) {
     // 1. get the current cookie value
-    const cookieValue = JSON.parse(Cookies.get('cart') || '[]');
+    const cookieValue = getParsedCookie('cart') || '[]';
 
     // 2. update the cookie
     const existIdOnArray = cookieValue.some((cookieObject) => {
@@ -102,7 +122,7 @@ export default function SingleProduct(props) {
       );
 
       setIsInCart(cookieUpdated);
-      Cookies.set('cart', JSON.stringify(cookieUpdated));
+      Cookies.set('cart', setParsedCookie(cookieUpdated));
     } else {
       newCookie = [
         ...cookieValue,
@@ -115,7 +135,7 @@ export default function SingleProduct(props) {
       ];
       // 4. set the new value of the cookie
       setIsInCart(newCookie);
-      Cookies.set('cart', JSON.stringify(newCookie));
+      Cookies.set('cart', setParsedCookie(newCookie));
     }
   }
 
@@ -193,11 +213,11 @@ export async function getServerSideProps(context) {
   const addedYarnFromCookies = JSON.parse(
     context.req.cookies.addedYarnToCart || '[]',
   );
-  const addedYarnToCart = JSON.parse(addedYarnFromCookies);
+  const addedYarnToCart = getParsedCookie(addedYarnFromCookies);
 
   return {
     props: {
-      yarn: matchingYarn,
+      product: matchingYarn,
       addedYarnToCart: addedYarnToCart,
       // productId: productId,
     },
