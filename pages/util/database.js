@@ -6,11 +6,19 @@ config();
 // CONNECT TO POSTGRESQL
 const sql = postgres();
 
-export async function readProducts() {
+export async function getAllProducts() {
   const products = await sql`
 SELECT * FROM products;
 `;
   return products;
+}
+
+export async function getProduct(id) {
+  const products = await sql`
+SELECT * FROM products
+WHERE id=${id}
+`;
+  return products[0];
 }
 
 // const yarnsDatabase = [

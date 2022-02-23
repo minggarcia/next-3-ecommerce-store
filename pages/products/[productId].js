@@ -1,11 +1,10 @@
 import { css } from '@emotion/react';
-import Cookies from 'js-cookie';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
 import Layout from '../../components/Layout';
-import { getParsedCookie, setParsedCookie } from '../util/cookies';
-import { readProducts } from '../util/database';
+import { getParsedCookie } from '../util/cookies';
+import { getProduct } from '../util/database';
 
 const productInfoStyle = css`
   padding-left: 180px;
@@ -61,111 +60,41 @@ const yarnAddButtonStyle = css`
   padding: 10px;
   cursor: pointer;
 `;
-// function for quantity:
 
-export function Counter({ minValue = 1, currentValue, newValueSetter }) {
-  function addQuantity() {
-    newValueSetter(currentValue + 1);
-  }
-  function subtractQuantity() {
-    if (currentValue === minValue) {
-      return;
-    }
-    newValueSetter(currentValue - 1);
-  }
-  return (
-    <div>
-      <button onClick={subtractQuantity}>-</button>
-      <p>{currentValue}</p>
-      <button onClick={addQuantity}>+</button>
-    </div>
-  );
+function cookieHandler(id) {
+  // 1. get the value of the cookie
+
+  const cookieValue = getParsedCookie('cart' || '[]');
 }
 
 export default function SingleProduct(props) {
-  const [isInCart, setIsInCart] = useState(props.addedYarnToCart);
+  console.log(props);
   const [quantity, setQuantity] = useState(0);
-  const [addedToCart, setAddedToCart] = useState('');
-
-  function handleAddToCookie(id) {
-    // 1. get the current cookie value
-    const cookieValue = getParsedCookie('cart') || '[]';
-
-    // 2. update the cookie
-    const existIdOnArray = cookieValue.some((cookieObject) => {
-      return cookieObject.id === id;
-    });
-
-    const yarnAddedToCart = cookieValue.find((cookieObject) => {
-      return cookieObject.id === id;
-    });
-
-    let newCookie;
-
-    if (existIdOnArray) {
-      const newQuantity = quantity + yarnAddedToCart.quantity;
-
-      newCookie = [
-        ...cookieValue,
-        {
-          id: id,
-          quantity: newQuantity,
-          name: props.yarn.name,
-        },
-      ];
-
-      // 3. update cookie
-      const cookieUpdated = newCookie.filter(
-        (cookieObject) =>
-          cookieObject.id !== id ||
-          (cookieObject.id === id) & (cookieObject.quantity === newQuantity),
-      );
-
-      setIsInCart(cookieUpdated);
-      Cookies.set('cart', setParsedCookie(cookieUpdated));
-    } else {
-      newCookie = [
-        ...cookieValue,
-        {
-          id: id,
-          quantity: quantity,
-
-          name: props.yarn.name,
-        },
-      ];
-      // 4. set the new value of the cookie
-      setIsInCart(newCookie);
-      Cookies.set('cart', setParsedCookie(newCookie));
-    }
-  }
-
-  const yarnIsAddedToCart = isInCart.some((likedObject) => {
-    return likedObject.id === props.yarn.id;
-  });
 
   return (
     <Layout>
       <Head>
-        <title>{props.yarn.type}</title>
+        <title>products</title>
         <meta description="all yarns" />
       </Head>
-
       <div css={productInfoStyle}>
         <Image
           data-test-id="product-image"
           alt="yarn image"
-          src={`/allyarns/${props.yarn.id}.jpeg`}
+          src={`/allyarns/${props.product.id}.jpeg`}
           width="500"
           height="300"
         />
         <span>
-          <h1>{props.yarn.name}</h1>
-          {addedToCart}
-          <div>id: {props.yarn.id}</div>
-          <div>name: {props.yarn.name}</div>
-          <div>type: {props.yarn.type}</div>
-          <div>color: {props.yarn.color}</div>
-          <div data-test-id="product-price">price: {props.yarn.price} € </div>
+          <h1>{props.product.name}</h1>
+
+          <div>id: {props.product.id}</div>
+          <div>name: {props.product.name}</div>
+          <div>type: {props.product.type}</div>
+          <div>color: {props.product.color}</div>
+          <div data-test-id="product-price">
+            price: {props.product.price} €{' '}
+          </div>
 
           <div css={quantityStyle}>
             <input type="number" id="quantity" name="quantity" min="1" />
@@ -183,11 +112,8 @@ export default function SingleProduct(props) {
               +{' '}
             </button>
           </div>
-          <button
-            css={yarnAddButtonStyle}
-            data-test-id="product-add-to-cart"
-            onClick={() => handleAddToCookie(props.yarn.id)}
-          >
+
+          <button css={yarnAddButtonStyle} data-test-id="product-add-to-cart">
             yarn add
           </button>
         </span>
@@ -197,29 +123,23 @@ export default function SingleProduct(props) {
 }
 
 export async function getServerSideProps(context) {
-  // get all products from database
-  const allProducts = await readProducts();
   const productId = context.query.productId;
-  const matchingYarn = allProducts.find((yarn) => {
-    // eslint-disable-next-line sonarjs/prefer-single-boolean-return
-    if (yarn.id === productId) {
-      return true;
-    } else {
-      return false;
-    }
-  });
+  // get all products from database
+  // const allProducts = await getAllProducts();
+  // const matchingProduct = allProducts.find((product) => {
+  //   // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+  //   if (product.id === productId) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // });
 
-  // cart cookie
-  const addedYarnFromCookies = JSON.parse(
-    context.req.cookies.addedYarnToCart || '[]',
-  );
-  const addedYarnToCart = getParsedCookie(addedYarnFromCookies);
-
+  const matchingProduct = await getProduct(productId);
+  console.log(matchingProduct);
   return {
     props: {
-      product: matchingYarn,
-      addedYarnToCart: addedYarnToCart,
-      // productId: productId,
+      product: matchingProduct,
     },
   };
 }

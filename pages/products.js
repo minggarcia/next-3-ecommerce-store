@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/Layout';
-import { readProducts } from './util/database';
+import { getAllProducts } from './util/database';
 
 // const yarns = [
 //   { id: 1, type: 'Merino', color: 'Ecru' },
@@ -95,12 +95,12 @@ export default function Products(props) {
 }
 
 // getServerSideProps --> runs only in node.js
-export async function getServerSideProps(context) {
-  const allProducts = await readProducts();
+export async function getServerSideProps() {
+  const allProducts = await getAllProducts();
 
   // 1. get the cookies from the browser
   // 2. pass the cookie to the frontend
-  const cookies = JSON.parse(context.req.cookies.addedYarnToCart || '[]');
+  // const cookies = JSON.parse(context.req.cookies.addedYarnToCart || '[]');
 
   // IMPORTANT:
   // - Always return an object from getServerSideProps
@@ -109,7 +109,6 @@ export async function getServerSideProps(context) {
     // in the props object, you can pass back whatever information you want
     props: {
       products: allProducts,
-      cookies,
     },
   };
 }
